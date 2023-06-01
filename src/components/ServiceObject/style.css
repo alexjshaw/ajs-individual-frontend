@@ -1,0 +1,45 @@
+.servicecontainer {
+    background-color: rgba(255, 0, 0, 0.5);
+    width: 100%;
+    height: fit-content;
+    display: grid;
+    grid-template-rows: 50px auto;
+    border-radius: 10px;
+    margin: 0 10px;
+}
+
+.servicetitlebar {
+    align-items: center;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.listtitleicons {
+    flex: none;
+}
+
+.servicecontent {
+    background-color: white;
+    margin: 0px 15px 5px 15px;
+    border-radius: 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-rows: min-content auto;
+}
+
+/* .servicedescription {
+    font-size: 0.75rem;
+    display: flex;
+    justify-self: center;
+    padding-bottom: 10px;
+} */
+
+.servicefeatures > * {
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+.serviceobjectbuttons {
+    padding-bottom: 5px;
+}

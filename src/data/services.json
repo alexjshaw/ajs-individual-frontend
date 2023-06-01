@@ -1,0 +1,63 @@
+{
+    "services": [
+      {
+        "serviceId": 1,
+        "userId": 1,
+        "enabled": true,
+        "name": "Weather",
+        "description": "Global weather at your fingertips",
+        "notes": [
+          { "id": 1, "text": "Current Weather Data" },
+          { "id": 2, "text": "Weather Forecasts" },
+          { "id": 3, "text": "Historical Weather" }
+        ],
+        "features": [
+          { 
+            "id": 1, 
+            "name": "Current Weather", 
+            "searchParameters": [
+              { "id": 1, "parameter": "Location" }
+            ]
+          },
+          { 
+            "id": 2, 
+            "name": "Weather Forecast", 
+            "searchParameters": [
+              { "id": 1, "parameter": "Location" },
+              { "id": 2, "parameter": "Number of Days" }
+            ]
+          }
+        ]
+      }
+      ,
+      {
+        "serviceId": 2,
+        "userId": 1,
+        "enabled": true,
+        "name": "News",
+        "description": "Up to date news articles from every corner of the globe.",
+        "notes": [
+          { "id": 1, "text": "Articles from hundreds of sources" },
+          { "id": 2, "text": "Search for any topic you choose" },
+          { "id": 3, "text": "Choose which sources you trust" }
+        ],
+        "features": [
+          { 
+            "id": 1, 
+            "name": "NEWS", 
+            "searchParameters": [
+              { "id": 1, "parameter": "NEWS" }
+            ]
+          },
+          { 
+            "id": 2, 
+            "name": "NEWS", 
+            "searchParameters": [
+              { "id": 1, "parameter": "NEWS" },
+              { "id": 2, "parameter": "NEWS" }
+            ]
+          }
+        ]
+      }      
+      ]     
+}

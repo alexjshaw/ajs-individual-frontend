@@ -13,6 +13,14 @@
   }
 }
 
+.container {
+  /* display: grid;
+  grid-template-columns: 151px 1fr;
+  grid-template-rows: 96px auto; */
+  background-color: #F0F5FA;
+  height: auto;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

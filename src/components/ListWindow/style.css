@@ -1,0 +1,19 @@
+/* .listwindowcontainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .listwindowcontainer > * {
+    margin: 0 10px;
+    flex-basis: 100%;
+    max-width: 300px;
+    align-self: flex-start;
+  }
+  
+  .listwindowcontainer > * > div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  } */

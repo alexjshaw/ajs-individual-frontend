@@ -1,0 +1,36 @@
+.listcontainerexpanded {
+    background-color: rgba(255, 0, 0, 0.5);
+    /* width: 100%; */
+    width: 500px;
+    height: fit-content;
+    display: grid;
+    grid-template-rows: 50px auto;
+    border-radius: 10px;
+}
+
+.listtitlebar {
+    align-items: center;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.listtitleicons {
+    flex: none
+}
+
+.listcontentexpanded {
+    background-color: white;
+    margin: 0px 15px 15px 15px;
+    border-radius: 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-rows: min-content auto;
+}
+
+.listdescription {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+}

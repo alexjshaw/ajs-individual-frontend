@@ -1,0 +1,10 @@
+.tabbar {
+    display: grid;
+    grid-template-columns: auto 240px;
+    padding: 0 48px;
+    align-items: center;
+  }
+
+.blur {
+  filter: blur(8px);
+}

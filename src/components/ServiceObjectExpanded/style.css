@@ -1,0 +1,14 @@
+.servicecontainerexpanded {
+    background-color: rgba(255, 0, 0, 0.5);
+    /* width: 500px; */
+    min-width: 500px;
+    max-width: 900px;
+    height: fit-content;
+    display: grid;
+    grid-template-rows: 50px auto;
+    border-radius: 10px;
+}
+
+.servicefeatureselect {
+    display: grid;
+}

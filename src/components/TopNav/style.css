@@ -1,0 +1,15 @@
+.topnav {
+    border-bottom: solid 2px rgba(0,0,0,0.25);
+    height: 100%;
+    display: grid;
+    grid-template-columns: 240px 1fr 290px;
+    align-items: center;
+}
+
+.pagetitle {
+    padding-left: 3rem;
+}
+
+.homebutton {
+    width: fit-content;
+}

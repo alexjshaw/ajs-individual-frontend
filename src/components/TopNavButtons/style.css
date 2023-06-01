@@ -1,0 +1,10 @@
+.topnavbuttons {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+}
+
+.navbutton {
+    height: 48px;
+    width: 48px;
+}
