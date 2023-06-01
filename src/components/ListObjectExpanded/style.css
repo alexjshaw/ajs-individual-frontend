@@ -1,7 +1,8 @@
 .listcontainerexpanded {
     background-color: rgba(255, 0, 0, 0.5);
     /* width: 100%; */
-    width: 500px;
+    min-width: 250px;
+    max-width: 500px;
     height: fit-content;
     display: grid;
     grid-template-rows: 50px auto;
@@ -28,9 +29,9 @@
     grid-template-rows: min-content auto;
 }
 
-.listdescription {
+/* .listdescription {
     font-size: 0.75rem;
     display: flex;
     align-items: center;
     padding-bottom: 10px;
-}
+} */

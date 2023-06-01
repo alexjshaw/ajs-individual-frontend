@@ -16,7 +16,8 @@ const ListObject = ({listItem}) => {
     const [isOpen, setIsOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
     const [newItemText, setNewItemText] = useState("")
-
+    const [listItems, setListItems] = useState(listItem.items)
+    
     const handleOpen = () => {
         setIsOpen(true);
     };
@@ -34,13 +35,21 @@ const ListObject = ({listItem}) => {
     }
 
     const submitListItem = () => {
-        console.log("SUBMIT LIST ITEM")
-        console.log(newItemText)
         setAnchorEl(null)
+        const newListItem = {
+            "itemId": listItems.length,
+            "itemText": newItemText
+        }
+        const updatedListItems = [...listItems, newListItem]
+        setListItems(updatedListItems)
     }
 
     const handleChange = (e) => {
         setNewItemText(e.target.value)
+    }
+
+    const testFunction = () => {
+        console.log(listItems)
     }
 
     const open = Boolean(anchorEl);
@@ -48,7 +57,7 @@ const ListObject = ({listItem}) => {
 
     const listTitle = listItem.name
     const listDescription = listItem.description
-    const items = listItem.items
+    // const items = listItem.items
 
     return (
         <>
@@ -57,7 +66,7 @@ const ListObject = ({listItem}) => {
                 <IconButton aria-label="Add List to Favourites">
                     <FavoriteBorderOutlined />
                 </IconButton>
-                <Typography variant="h6">
+                <Typography variant="h6" onClick={testFunction}>
                     {listTitle}
                 </Typography>
                 <IconButton aria-label="Edit List">
@@ -71,7 +80,7 @@ const ListObject = ({listItem}) => {
                     </Typography>
                 </Box>
                 <List className="listitems">
-                    {items.slice(0,5).map(item => 
+                    {listItems.slice(0,5).map(item => 
                         <ListItem key={item.itemId} disablePadding>
                             <ListItemIcon sx={{minWidth: "25px"}}>
                                 <CircleIcon fontSize="12px" />
@@ -82,16 +91,15 @@ const ListObject = ({listItem}) => {
                                 {item.itemText}
                                 </Typography>
                                 } />
-                    
                         </ListItem>
                         )}
                 </List>
-                {items.length > 5 && 
+                {listItems.length > 5 && 
                     <Button variant="text" startIcon={<ExpandMoreIcon />} onClick={handleOpen} >
-                        <span>Show {items.length - 5} more</span>
+                        <span>Show {listItems.length - 5} more</span>
                     </Button>}
             </Box>
-            <Box className="listbuttons" sx={{display:"flex", justifyContent:"center"}}>
+            <Box className="listbuttons" sx={{display:"flex", justifyContent:"center", pb:"12px"}}>
                 <Button variant="outlined" onClick={handleAddItemOpen}>Add Item</Button>
                 <Popover 
                     id={id}
@@ -131,7 +139,7 @@ const ListObject = ({listItem}) => {
                 <Button variant="outlined" onClick={handleOpen}>Edit List</Button>
             </Box>
         </Box>
-        <ListObjectExpanded isOpen={isOpen} handleClose={handleClose} listItem={listItem} />
+        <ListObjectExpanded isOpen={isOpen} handleClose={handleClose} listItem={listItem} listItems={listItems} setListItems={setListItems}/>
         </>
     )
 }

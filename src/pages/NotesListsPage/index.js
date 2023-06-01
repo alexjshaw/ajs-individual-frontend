@@ -8,31 +8,8 @@ import listsData from '../../data/lists.json'
 
 const NotesListsPage = () => {
 
-    // const [listsData, setListsData] = useState({})
-
-    console.log("listsData", listsData)
-
-    const [lists, setLists] = useState([])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("http://localhost:3001/lists");
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setLists(data);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        };
-        fetchData();
-    }, []);
-
     const [selectedTab, setSelectedTab] = useState(0)
-    // const lists = listsData.lists
-    console.log(lists)
+    const lists = listsData.lists
 
     const handleChange = (event, newValue) => {
         setSelectedTab(newValue)
