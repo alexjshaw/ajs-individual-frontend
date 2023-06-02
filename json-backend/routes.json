@@ -1,0 +1,5 @@
+{
+    "/lists/:id": "/lists/:id",
+    "/lists/:id/items": "/lists/:id/items"
+  }
+  
