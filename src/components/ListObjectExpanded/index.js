@@ -1,63 +1,71 @@
 import './style.css'
 import { useState } from 'react';
 import React from "react";
-import { Dialog, Box, Typography, List, ListItem, ListItemIcon, ListItemText, Popover, FormControl, OutlinedInput, InputAdornment, FormHelperText } from "@mui/material";
+import { Dialog, Box, Typography, List, ListItem, ListItemIcon, ListItemText, Popover, FormControl, OutlinedInput, InputAdornment, FormHelperText, TextField } from "@mui/material";
 import {IconButton} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CircleIcon from '@mui/icons-material/Circle';
-import SingleListItem from "../SingleListItem";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import EditIcon from '@mui/icons-material/Edit';
+import { patch, get, post, deleted } from '../../service/apiClient';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmAction from '../ConfirmAction';
 
-const ListObjectExpanded = ({isOpen, handleClose, listItem, listItems, setListItems}) => {
+const ListObjectExpanded = ({isOpen, handleClose, currentList, setCurrentList, listItems, setListItems}) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [newItemText, setNewItemText] = useState("")
-    const listTitle = listItem.name
-    const listDescription = listItem.description
-    console.log("listItem", listItem)
+    const [editItemText, setEditItemText] = useState("")
+    const [editItemId, setEditItemId] = useState("")
+    const [confirmOpen, setConfirmOpen] = useState(false)
+    const listTitle = currentList.name
+    const listDescription = currentList.description
 
     const open = Boolean(anchorEl);
     const id = open ? 'text-field-popover' : undefined;
 
-    const handleEditOpen = (event) => {
+    const handleEditOpen = (item) => (event) => {
         setAnchorEl(event.currentTarget);
-        const listItem = event.target.closest('.MuiListItem-root');
-        const itemText = listItem.querySelector('.MuiTypography-root').textContent;
-        console.log("listItem", listItem)
-        console.log("itemText", itemText)
-        setNewItemText(itemText);
+        setEditItemId(item.itemId)
+        setEditItemText(item.itemText)
     }
 
     const handleEditClose = () => {
         setAnchorEl(null);
     }
 
-    const handleChange = (e) => {
-        setNewItemText(e.target.value)
-        console.log(newItemText)
+    const handleChangeEdit = (e) => {
+        setEditItemText(e.target.value)
     }
 
-    const submitItemEdit = () => {
+    const handleChange = (e) => {
+        setNewItemText(e.target.value)
+    }
+
+    const fetchCurrentList = async () => {
+        const updatedCurrentItem = await get(`lists/${currentList.listId}`)
+        setCurrentList(updatedCurrentItem)
+        setListItems(updatedCurrentItem.items)
+    }
+
+    const submitItemEdit = async () => {
+        await patch(`lists/${currentList.listId}/items/${editItemId}`, {"itemText":editItemText})
         setAnchorEl(null);
-    
-        // Update the edited item in listItems
-        const updatedItems = listItems.map((item) => {
-            console.log(item.itemId)
-            console.log(listItems.itemId)
-          if (item.itemId === listItems.itemId) {
-            return {
-              ...item,
-              itemText: newItemText,
-            };
-          }
-          return item;
-        });
-    
-        // Update the listItems state with the edited item
-        setListItems(updatedItems);
+        fetchCurrentList()
       };
+
+    const addNewItem = async () => {
+        await post(`lists/${currentList.listId}/items`, {"itemText":newItemText})
+        fetchCurrentList()
+        setNewItemText("")
+    }
+
+    const deleteItem = async (item) => {
+        console.log("DELETEITEM")
+        await deleted(`lists/${currentList.listId}/items/${item.itemId}`, {"itemId":item.itemId})
+        fetchCurrentList()
+    }
 
     return (
         <>
@@ -90,7 +98,7 @@ const ListObjectExpanded = ({isOpen, handleClose, listItem, listItems, setListIt
                     </Typography>
                     </Box>
                     <List className="listitems">
-                    {listItems.slice(0,5).map(item => 
+                    {listItems.map(item => 
                         <ListItem key={item.itemId} disablePadding>
                             <ListItemIcon sx={{minWidth: "25px"}}>
                                 <CircleIcon fontSize="12px" />
@@ -101,13 +109,48 @@ const ListObjectExpanded = ({isOpen, handleClose, listItem, listItems, setListIt
                                 </Typography>
                                 } />
                             <ListItemIcon sx={{minWidth: "25px"}}>
-                                <IconButton onClick={handleEditOpen}>
+                                <IconButton onClick={handleEditOpen(item)}>
                                     <EditIcon size="small"/>
                                 </IconButton>
+                                <div>
+                                <IconButton onClick={() => setConfirmOpen(true)}>
+                                    <DeleteIcon size="small"/>
+                                </IconButton>
+                                <ConfirmAction
+                                    title="Delete Item?"
+                                    open={confirmOpen}
+                                    setOpen={setConfirmOpen}
+                                    onConfirm={() => deleteItem(item)}
+                                >
+                                    Are you sure you want to delete this item?
+                                </ConfirmAction>
+                                </div>
                             </ListItemIcon>
                         </ListItem>
                         )}
                 </List>
+                <Box
+                    component="form"
+                    sx={{
+                    '& .MuiTextField-root': { m: 1 },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                >
+                    <TextField 
+                        label="Add New Item"
+                        multiline
+                        value={newItemText}
+                        onChange={handleChange}
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <IconButton onClick={addNewItem}>
+                                    <AddIcon />
+                                </IconButton>
+                            </InputAdornment>
+                        }}
+                    />
+                </Box>
                 </Box>
             </Box>
         </Dialog>
@@ -128,8 +171,8 @@ const ListObjectExpanded = ({isOpen, handleClose, listItem, listItems, setListIt
             <FormControl sx={{ m: 1, width: '50ch' }} variant="outlined">
                 <OutlinedInput
                     type={'text'}
-                    value={newItemText}
-                    onChange={handleChange}
+                    value={editItemText}
+                    onChange={handleChangeEdit}
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton
@@ -142,7 +185,7 @@ const ListObjectExpanded = ({isOpen, handleClose, listItem, listItems, setListIt
                         </InputAdornment>
                     }
                 />
-                <FormHelperText>Create New List Item</FormHelperText>
+                <FormHelperText>Edit List Item</FormHelperText>
             </FormControl>
         </Popover>
         </>

@@ -10,14 +10,21 @@ import React from 'react';
 import ListObjectExpanded from '../ListObjectExpanded';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FavoriteBorderOutlined } from '@mui/icons-material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { post, get, deleted } from '../../service/apiClient';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmAction from '../ConfirmAction';
 
-const ListObject = ({listItem}) => {
+const ListObject = ({list, setTriggerReload, handleDeleteList}) => {
 
     const [isOpen, setIsOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
     const [newItemText, setNewItemText] = useState("")
-    const [listItems, setListItems] = useState(listItem.items)
-    
+    const [currentList, setCurrentList] = useState(list)
+    const [listItems, setListItems] = useState(list.items)
+    const [isFavourite, setIsFavourite] = useState(false)
+    const [confirmOpen, setConfirmOpen] = useState(false)
+
     const handleOpen = () => {
         setIsOpen(true);
     };
@@ -34,14 +41,22 @@ const ListObject = ({listItem}) => {
         setAnchorEl(null);
     }
 
-    const submitListItem = () => {
-        setAnchorEl(null)
-        const newListItem = {
-            "itemId": listItems.length,
-            "itemText": newItemText
-        }
-        const updatedListItems = [...listItems, newListItem]
-        setListItems(updatedListItems)
+    const fetchCurrentList = async () => {
+        const updatedCurrentItem = await get(`lists/${currentList.listId}`)
+        setCurrentList(updatedCurrentItem)
+        setListItems(updatedCurrentItem.items)
+    }
+
+    const submitListItem = async () => {
+        await post(`lists/${currentList.listId}/items`, {"itemText":newItemText})
+        setAnchorEl(null);
+        fetchCurrentList()
+        setNewItemText("")
+    }
+
+    const deleteList = async () => {
+        await deleted(`lists/${currentList.listId}`, {"listId":currentList.listId})
+        handleDeleteList(currentList.listId)
     }
 
     const handleChange = (e) => {
@@ -49,29 +64,45 @@ const ListObject = ({listItem}) => {
     }
 
     const testFunction = () => {
+        console.log(currentList)
         console.log(listItems)
+    }
+
+    const toggleFavourite = () => {
+        setIsFavourite(!isFavourite)
     }
 
     const open = Boolean(anchorEl);
     const id = open ? 'text-field-popover' : undefined;
 
-    const listTitle = listItem.name
-    const listDescription = listItem.description
-    // const items = listItem.items
+    const listTitle = list.name
+    const listDescription = list.description
 
     return (
         <>
         <Box className="listcontainer">
             <Box className="listtitlebar">
-                <IconButton aria-label="Add List to Favourites">
-                    <FavoriteBorderOutlined />
+                <IconButton aria-label="Add List to Favourites" onClick={toggleFavourite}>
+                    {!isFavourite && <FavoriteBorderOutlined />}
+                    {isFavourite && <FavoriteIcon style={{fill: "red"}} />}
+
                 </IconButton>
                 <Typography variant="h6" onClick={testFunction}>
                     {listTitle}
                 </Typography>
-                <IconButton aria-label="Edit List">
-                    <MoreHorizIcon />
+                <div>
+                <IconButton aria-label="Delete List" onClick={() => setConfirmOpen(true)}>
+                    <DeleteIcon />
                 </IconButton>
+                <ConfirmAction
+                    title="Delete Post?"
+                    open={confirmOpen}
+                    setOpen={setConfirmOpen}
+                    onConfirm={() => deleteList()}
+                >
+                    Are you sure you want to delete this post?
+                </ConfirmAction>
+                </div>
             </Box>
             <Box className="listcontent">
                 <Box>
@@ -116,30 +147,33 @@ const ListObject = ({listItem}) => {
                     }}
                 >
                     <FormControl sx={{ m: 1, width: '50ch' }} variant="outlined">
-                    <OutlinedInput
+                    <TextField
+                        required
                         type={'text'}
                         value={newItemText}
                         onChange={handleChange}
-                        endAdornment={
+                        label="Create New List Item"
+                        InputProps={{
+                            endAdornment: (
                             <InputAdornment position="end">
                                 <IconButton
-                                    aria-label="Submit New List Item"
-                                    onClick={submitListItem}
-                                    edge="end"
-                                    >
-                                        <AddIcon />
+                                aria-label="Submit New List Item"
+                                onClick={submitListItem}
+                                edge="end"
+                                >
+                                <AddIcon />
                                 </IconButton>
                             </InputAdornment>
-                        }
+                            ),
+                        }}
                     />
-                    <FormHelperText>Create New List Item</FormHelperText>
                     </FormControl>
 
                 </Popover>
                 <Button variant="outlined" onClick={handleOpen}>Edit List</Button>
             </Box>
         </Box>
-        <ListObjectExpanded isOpen={isOpen} handleClose={handleClose} listItem={listItem} listItems={listItems} setListItems={setListItems}/>
+        <ListObjectExpanded isOpen={isOpen} handleClose={handleClose} currentList={currentList} setCurrentList={setCurrentList} listItems={listItems} setListItems={setListItems}/>
         </>
     )
 }

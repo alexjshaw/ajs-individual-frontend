@@ -1,0 +1,13 @@
+.logincontainer {
+    height: 100vh;
+    padding: 24px;
+    background-color: #f0f5fa;
+}
+
+.mainlogo {
+    height: 64px;
+}
+
+.homelogo {
+    margin-bottom: 48px;
+}

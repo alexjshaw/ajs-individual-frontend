@@ -6,6 +6,8 @@ import { useState, useEffect } from "react"
 import CircleIcon from '@mui/icons-material/Circle';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CurrentWeatherCard from './CurrentWeatherCard';
+import Forecast from './Forecast';
 
 const ServiceObjectExpanded = ({isOpen, handleClose, serviceItem}) => {
 
@@ -16,6 +18,8 @@ const ServiceObjectExpanded = ({isOpen, handleClose, serviceItem}) => {
     const [searchParams, setSearchParams] = useState({})
     const [currentWeather, setCurrentWeather] = useState({})
     const [weatherForecast, setWeatherForecast] = useState({})
+    const [showCurrent, setShowCurrent] = useState(false)
+    const [showForecast, setShowForecast] = useState(false)
 
 // WEATHER API SETTINGS
 
@@ -34,6 +38,8 @@ const ServiceObjectExpanded = ({isOpen, handleClose, serviceItem}) => {
     if (isOpen) {
         setActiveFeature(serviceFeatures[0].name)
         setSearchParams({})
+        setShowCurrent(false)
+        setShowForecast(false)
     }
     }, [isOpen, serviceFeatures])
 
@@ -56,12 +62,16 @@ const ServiceObjectExpanded = ({isOpen, handleClose, serviceItem}) => {
                 throw new Error('Network response was not ok');
               }
               const data = await response.json();
-              setCurrentWeather(data); // Update the state with the fetched data
+              await setCurrentWeather(data); // Update the state with the fetched data
             } catch (error) {
               console.error('Error:', error);
             }
           };
-          fetchData();
+          fetchData().then(() => {
+            setShowCurrent(true)
+            setShowForecast(false)
+          })
+          
     }
 
     const fetchWeatherForecast = () => {
@@ -77,7 +87,10 @@ const ServiceObjectExpanded = ({isOpen, handleClose, serviceItem}) => {
               console.error('Error:', error);
             }
           };
-          fetchData();
+          fetchData().then(() => {
+            setShowCurrent(false)
+            setShowForecast(true)
+          })
     }
 
     const serviceSearch = () => {
@@ -122,6 +135,7 @@ const ServiceObjectExpanded = ({isOpen, handleClose, serviceItem}) => {
                         <MoreHorizIcon />
                     </IconButton>
                 </Box>
+                <Box className="serviceinteractioncontainer">
                 <Box className="servicefeatureselect"
                     display="flex"
                     justifyContent="center"
@@ -152,6 +166,7 @@ const ServiceObjectExpanded = ({isOpen, handleClose, serviceItem}) => {
                             </TextField>
                         </div>
                     </Box>
+                
                 </Box>
                 <Box className="searchparameters">
                     <Typography variant='body1' sx={{textAlign: "center", pb:"10px"}}>
@@ -181,6 +196,9 @@ const ServiceObjectExpanded = ({isOpen, handleClose, serviceItem}) => {
                             Search
                         </Button>
                     </Box>
+                </Box>
+                    {showCurrent && <CurrentWeatherCard currentWeather={currentWeather} />}
+                    {showForecast && <Forecast forecastData={weatherForecast} />}
                 </Box>
             </Box>
         </Dialog>

@@ -3,7 +3,7 @@
 // import { BrowserRouter } from 'react-router-dom';
 import './App.css';
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LeftNav from './components/LeftNav';
 import TopNav from './components/TopNav';
 import MainWindow from './components/MainWindow';
@@ -11,17 +11,29 @@ import { ProtectedRoute } from './context/auth';
 import NotesListsPage from './pages/NotesListsPage';
 import ServicesPage from './pages/ServicesPage'
 import SettingsPage from './pages/SettingsPage'
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
   return (
     <>
     <Routes>
       <Route 
-        index
+        path="/"
         element={
-          <ProtectedRoute>
-            <MainWindow />
-          </ProtectedRoute>
+          <Navigate to="/login" />
+        }
+      />
+      <Route 
+        path="login"
+        element={
+          <Login />
+        }
+      />
+      <Route 
+        path="register"
+        element={
+          <Register />
         }
       />
       <Route 
@@ -40,14 +52,14 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route 
+      {/* <Route 
         path="notes"
         element={
           <ProtectedRoute>
             <NotesListsPage />
           </ProtectedRoute>
         }
-      />
+      /> */}
       <Route 
         path="settings"
         element={

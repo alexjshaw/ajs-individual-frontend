@@ -10,22 +10,9 @@ const LeftNav = () => {
             <NavMenuItem text="Services" to="/services" />
             <NavMenuItem text="Lists & Notes" to="/lists" />
             <NavMenuItem text="Settings" to="/settings" />
-            {/* <NavMenuItem text="Log Out" className="logoutbutton" /> */}
             <NavMenuButton text="Log Out" className="logoutbutton" />
-
         </Box>
     )
 }
 
 export default LeftNav
-
-// const LeftNav = () => {
-//     return (
-//         <Box className="leftnav">
-//             <NavMenuButton text="Services" />
-//             <NavMenuButton text="Lists & Notes" />
-//             <NavMenuButton text="Settings" />
-//             <NavMenuButton text="Log Out" className="logoutbutton" />
-//         </Box>
-//     )
-// }
