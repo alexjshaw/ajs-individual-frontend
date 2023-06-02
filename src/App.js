@@ -13,10 +13,16 @@ import ServicesPage from './pages/ServicesPage'
 import SettingsPage from './pages/SettingsPage'
 import Login from './pages/Login';
 import Register from './pages/Register';
+import { useEffect } from 'react';
+import { Container, ThemeProvider } from '@mui/material';
+import theme from './theme';
 
 function App() {
+  
   return (
-    <>
+    <div style={{ width: '100vw', height: '100vh', backgroundColor: '#f6fafd' }}>
+    <ThemeProvider theme={theme}>
+      <Container style={{ maxWidth: '1440px', margin: '0 auto', paddingLeft: 0, paddingRight: 0 }}>
     <Routes>
       <Route 
         path="/"
@@ -69,7 +75,9 @@ function App() {
         }
       />
     </Routes>
-    </>
+    </Container>
+    </ThemeProvider>
+    </div>
   );
 }
 

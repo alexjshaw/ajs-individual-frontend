@@ -1,5 +1,5 @@
 import './style.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import React from "react";
 import { Dialog, Box, Typography, List, ListItem, ListItemIcon, ListItemText, Popover, FormControl, OutlinedInput, InputAdornment, FormHelperText, TextField } from "@mui/material";
 import {IconButton} from "@mui/material";
@@ -12,15 +12,15 @@ import { patch, get, post, deleted } from '../../service/apiClient';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmAction from '../ConfirmAction';
 
-const ListObjectExpanded = ({isOpen, handleClose, currentList, setCurrentList, listItems, setListItems}) => {
+const ListObjectExpanded = ({isOpen, handleClose, currentList, setCurrentList, currentListItems, isFavourite, fetchAllLists, allLists}) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [newItemText, setNewItemText] = useState("")
     const [editItemText, setEditItemText] = useState("")
+    const [itemToDelete, setItemToDelete] = useState("")
     const [editItemId, setEditItemId] = useState("")
     const [confirmOpen, setConfirmOpen] = useState(false)
-    const listTitle = currentList.name
-    const listDescription = currentList.description
+    const {listId, name, favourite, description} = currentList
 
     const open = Boolean(anchorEl);
     const id = open ? 'text-field-popover' : undefined;
@@ -43,28 +43,29 @@ const ListObjectExpanded = ({isOpen, handleClose, currentList, setCurrentList, l
         setNewItemText(e.target.value)
     }
 
-    const fetchCurrentList = async () => {
-        const updatedCurrentItem = await get(`lists/${currentList.listId}`)
-        setCurrentList(updatedCurrentItem)
-        setListItems(updatedCurrentItem.items)
+    const deleteItem = async () => {
+        const itemId = itemToDelete
+        await deleted(`lists/${listId}/items/${itemId}`, {itemId})
+        await fetchAllLists()
     }
 
-    const submitItemEdit = async () => {
-        await patch(`lists/${currentList.listId}/items/${editItemId}`, {"itemText":editItemText})
-        setAnchorEl(null);
-        fetchCurrentList()
-      };
-
-    const addNewItem = async () => {
-        await post(`lists/${currentList.listId}/items`, {"itemText":newItemText})
-        fetchCurrentList()
+    const addNewListItem = async () => {
+        await post(`lists/${listId}/items`,{"itemText":newItemText})
+        await fetchAllLists()
         setNewItemText("")
     }
 
-    const deleteItem = async (item) => {
-        console.log("DELETEITEM")
-        await deleted(`lists/${currentList.listId}/items/${item.itemId}`, {"itemId":item.itemId})
-        fetchCurrentList()
+    const editListItem = async () => {
+        await patch(`lists/${listId}/items/${editItemId}`,{"itemText":editItemText})
+        await fetchAllLists()
+        setEditItemText("")
+        handleEditClose()
+    }
+
+    const deleteList = async () => {
+        const listId = itemToDelete
+        await deleted(`lists/${listId}`,{listId})
+        await fetchAllLists()
     }
 
     return (
@@ -85,20 +86,30 @@ const ListObjectExpanded = ({isOpen, handleClose, currentList, setCurrentList, l
                         <FavoriteBorderIcon />
                     </IconButton>
                         <Typography variant="h6">
-                        {listTitle}
+                        {name}
                         </Typography>
-                    <IconButton aria-label="Edit Service">
-                        <MoreHorizIcon />
-                    </IconButton>
+                        <div>
+                        <IconButton aria-label="Delete List" onClick={() => {setConfirmOpen(true);setItemToDelete(listId)}}>
+                            <DeleteIcon />
+                        </IconButton>
+                        <ConfirmAction
+                            title="Delete Post?"
+                            open={confirmOpen}
+                            setOpen={setConfirmOpen}
+                            onConfirm={() => deleteList()}
+                        >
+                            Are you sure you want to delete this list?
+                        </ConfirmAction>
+                        </div>
                 </Box>
                 <Box className="listcontentexpanded">
                     <Box className="listdescription">
                     <Typography variant="body1" align="center" sx={{fontWeight: 'bold'}}>
-                        {listDescription}
+                        {description}
                     </Typography>
                     </Box>
                     <List className="listitems">
-                    {listItems.map(item => 
+                    {currentListItems.map(item => 
                         <ListItem key={item.itemId} disablePadding>
                             <ListItemIcon sx={{minWidth: "25px"}}>
                                 <CircleIcon fontSize="12px" />
@@ -113,14 +124,14 @@ const ListObjectExpanded = ({isOpen, handleClose, currentList, setCurrentList, l
                                     <EditIcon size="small"/>
                                 </IconButton>
                                 <div>
-                                <IconButton onClick={() => setConfirmOpen(true)}>
+                                <IconButton onClick={() => {setConfirmOpen(true);setItemToDelete(item.itemId)}}>
                                     <DeleteIcon size="small"/>
                                 </IconButton>
                                 <ConfirmAction
                                     title="Delete Item?"
                                     open={confirmOpen}
                                     setOpen={setConfirmOpen}
-                                    onConfirm={() => deleteItem(item)}
+                                    onConfirm={() => deleteItem()}
                                 >
                                     Are you sure you want to delete this item?
                                 </ConfirmAction>
@@ -144,7 +155,7 @@ const ListObjectExpanded = ({isOpen, handleClose, currentList, setCurrentList, l
                         onChange={handleChange}
                         InputProps={{
                             endAdornment: <InputAdornment position="end">
-                                <IconButton onClick={addNewItem}>
+                                <IconButton onClick={addNewListItem}>
                                     <AddIcon />
                                 </IconButton>
                             </InputAdornment>
@@ -177,7 +188,7 @@ const ListObjectExpanded = ({isOpen, handleClose, currentList, setCurrentList, l
                         <InputAdornment position="end">
                             <IconButton
                                 aria-label="Submit New List Item"
-                                onClick={submitItemEdit}
+                                onClick={editListItem}
                                 edge="end"
                                 >
                                     <AddIcon />

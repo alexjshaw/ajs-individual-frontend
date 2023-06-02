@@ -5,66 +5,82 @@ import ListWindow from '../../components/ListWindow';
 import NoteWindow from '../../components/NoteWindow';
 import SearchBar from '../../components/SearchBar';
 import listsData from '../../data/lists.json'
-import {deleted} from "../../service/apiClient"
+import {deleted, get, post} from "../../service/apiClient"
 
 const NotesListsPage = () => {
 
     const [allLists, setAllLists] = useState([])
     const [triggerReload, setTriggerReload] = useState(false)
+    const [searchTerm, setSearchTerm] = useState("")
 
     useEffect(() => {
-        const fetchList = async () => {
-            try {
-              const response = await fetch('http://localhost:3001/lists');
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              const listData = await response.json();
-              setAllLists(listData || {});
-            } catch (error) {
-              console.error(error);
-            }
-          };
-          fetchList();
-          setTriggerReload(false)
+        fetchAllLists()
     }, [triggerReload])
 
+    const fetchAllLists = async () => {
+        try {
+            const lists = await get(`lists`)
+            setAllLists(lists)
+        } catch (error) {
+            console.error("Error fetching lists", error)
+        }
+    }
+
     const [selectedTab, setSelectedTab] = useState(0)
-    // const lists = listsData.lists
 
     const handleChange = (event, newValue) => {
         setSelectedTab(newValue)
     }
 
-    const handleDeleteList = (listId) => {
-        setTimeout(() => {
-          setAllLists((prevLists) => prevLists.filter((list) => list.listId !== listId));
-        }, 0);
-      };
+    // const handleDeleteList = async (currentList) => {
+    //     try {
+    //       await deleted(`lists/${currentList.listId}`, { "listId": currentList.listId });
+    //       const response = await fetch('http://localhost:3001/lists');
+    //       if (!response.ok) {
+    //         throw new Error('Network response was not ok');
+    //       }
+    //       const listData = await response.json();
+    //       setAllLists(listData || []);
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   };
+      
+    const testFunction = () => {
+        // fetchAllLists()
+        console.log("TEST")
+        console.log(allLists)
+    }
       
 
     const getTabContent = () => {
         switch(selectedTab) {
             case 0:
                 return <ListWindow
-                    allLists={allLists}
-                    setAllLists={setAllLists}
-                    setTriggerReload={setTriggerReload}
-                    handleDeleteList={handleDeleteList}
+                        allLists={allLists}
+                        setAllLists={setAllLists}
+                        searchTerm={searchTerm}
+                        setTriggerReload={setTriggerReload}
+                        fetchAllLists={fetchAllLists}
                     />;
             case 1:
                 return <NoteWindow />;
             case 2:
-                return <FavouriteLNWindow />;
+                return <FavouriteLNWindow
+                        allLists={allLists}
+                        setAllLists={setAllLists}
+                        searchTerm={searchTerm}
+                        setTriggerReload={setTriggerReload}
+                        fetchAllLists={fetchAllLists}
+                    />;
             default:
                 return null;
         }
     }
 
-
-      
-
     return (
+        <>
+        {/* <div onClick={testFunction}>TEXT</div> */}
         <Box className={`mainwindow`}>
             <Box className="tabbar">
                 {/* <button onClick={testFunction}>TEST</button> */}
@@ -73,12 +89,13 @@ const NotesListsPage = () => {
                     <Tab label="Notes" />
                     <Tab label="Favourites" />
                 </Tabs>
-                <SearchBar />
+                <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
             </Box>
             <Container sx={{ marginTop: "24px" }}>
                 {getTabContent()}
             </Container>
         </Box>
+        </>
     )
 }
 

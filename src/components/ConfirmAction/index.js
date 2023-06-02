@@ -9,6 +9,9 @@ const ConfirmAction = (props) => {
       open={open}
       onClose={() => setOpen(false)}
       aria-labelledby="confirm-dialog"
+      BackdropProps={{
+        sx: { backgroundColor: "transparent" }
+      }}
     >
       <DialogTitle id="confirm-dialog">{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>

@@ -2,11 +2,11 @@ import {TextField} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import {InputAdornment} from '@mui/material';
 
-const handleSearch = (e) => {
-    console.log(e.target.value)
-}
+const SearchBar = ({searchTerm, setSearchTerm}) => {
 
-const SearchBar = () => {
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value)
+    }
 
     return (
         <TextField

@@ -1,5 +1,5 @@
 import './style.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, IconButton, Button, Typography, List, ListItem, ListItemIcon, ListItemText, Popover, TextField, InputAdornment, OutlinedInput, FormControl, FormHelperText } from "@mui/material"
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,19 +11,34 @@ import ListObjectExpanded from '../ListObjectExpanded';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FavoriteBorderOutlined } from '@mui/icons-material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { post, get, deleted } from '../../service/apiClient';
+import { post, get, deleted, patch } from '../../service/apiClient';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmAction from '../ConfirmAction';
 
-const ListObject = ({list, setTriggerReload, handleDeleteList}) => {
+const ListObject = ({ list, setTriggerReload, allLists, setAllLists, fetchAllLists }) => {
 
     const [isOpen, setIsOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
     const [newItemText, setNewItemText] = useState("")
     const [currentList, setCurrentList] = useState(list)
-    const [listItems, setListItems] = useState(list.items)
-    const [isFavourite, setIsFavourite] = useState(false)
+    const [currentListItems, setCurrentListItems] = useState(list.items)
+    const [isFavourite, setIsFavourite] = useState(list.favourite)
     const [confirmOpen, setConfirmOpen] = useState(false)
+    const {listId, name, favourite, description} = currentList
+    
+    useEffect(() => {
+        if (favourite) {
+            setIsFavourite(true)
+        } else {
+            setIsFavourite(false)
+        }
+    },[])
+
+    useEffect(() => {
+        setCurrentList(list)
+        setCurrentListItems(list.items)
+        setIsFavourite(list.favourite)
+    }, [allLists])
 
     const handleOpen = () => {
         setIsOpen(true);
@@ -41,45 +56,33 @@ const ListObject = ({list, setTriggerReload, handleDeleteList}) => {
         setAnchorEl(null);
     }
 
-    const fetchCurrentList = async () => {
-        const updatedCurrentItem = await get(`lists/${currentList.listId}`)
-        setCurrentList(updatedCurrentItem)
-        setListItems(updatedCurrentItem.items)
-    }
-
-    const submitListItem = async () => {
-        await post(`lists/${currentList.listId}/items`, {"itemText":newItemText})
-        setAnchorEl(null);
-        fetchCurrentList()
+    const addNewListItem = async () => {
+        await post(`lists/${listId}/items`,{"itemText":newItemText})
+        await fetchAllLists()
+        handleAddItemClose()
         setNewItemText("")
     }
 
+    const toggleFavourite = async () => {
+        await patch(`lists/${listId}`, {"favourite":(!favourite)})
+        fetchAllLists()
+    }
+
     const deleteList = async () => {
-        await deleted(`lists/${currentList.listId}`, {"listId":currentList.listId})
-        handleDeleteList(currentList.listId)
+        console.log(listId)
+        await deleted(`lists/${listId}`,{listId})
+        await fetchAllLists()
     }
 
     const handleChange = (e) => {
         setNewItemText(e.target.value)
-    }
-
-    const testFunction = () => {
-        console.log(currentList)
-        console.log(listItems)
-    }
-
-    const toggleFavourite = () => {
-        setIsFavourite(!isFavourite)
-    }
+    }            
 
     const open = Boolean(anchorEl);
     const id = open ? 'text-field-popover' : undefined;
 
-    const listTitle = list.name
-    const listDescription = list.description
-
     return (
-        <>
+
         <Box className="listcontainer">
             <Box className="listtitlebar">
                 <IconButton aria-label="Add List to Favourites" onClick={toggleFavourite}>
@@ -87,8 +90,8 @@ const ListObject = ({list, setTriggerReload, handleDeleteList}) => {
                     {isFavourite && <FavoriteIcon style={{fill: "red"}} />}
 
                 </IconButton>
-                <Typography variant="h6" onClick={testFunction}>
-                    {listTitle}
+                <Typography variant="h6">
+                    {name}
                 </Typography>
                 <div>
                 <IconButton aria-label="Delete List" onClick={() => setConfirmOpen(true)}>
@@ -98,20 +101,20 @@ const ListObject = ({list, setTriggerReload, handleDeleteList}) => {
                     title="Delete Post?"
                     open={confirmOpen}
                     setOpen={setConfirmOpen}
-                    onConfirm={() => deleteList()}
+                    onConfirm={deleteList}
                 >
-                    Are you sure you want to delete this post?
+                    Are you sure you want to delete this list?
                 </ConfirmAction>
                 </div>
             </Box>
             <Box className="listcontent">
                 <Box>
                     <Typography variant="body1" align="center" sx={{fontWeight: 'bold'}}>
-                        {listDescription}
+                        {description}
                     </Typography>
                 </Box>
                 <List className="listitems">
-                    {listItems.slice(0,5).map(item => 
+                    {currentListItems.slice(0,5).map(item => 
                         <ListItem key={item.itemId} disablePadding>
                             <ListItemIcon sx={{minWidth: "25px"}}>
                                 <CircleIcon fontSize="12px" />
@@ -125,9 +128,9 @@ const ListObject = ({list, setTriggerReload, handleDeleteList}) => {
                         </ListItem>
                         )}
                 </List>
-                {listItems.length > 5 && 
+                {currentListItems.length > 5 && 
                     <Button variant="text" startIcon={<ExpandMoreIcon />} onClick={handleOpen} >
-                        <span>Show {listItems.length - 5} more</span>
+                        <span>Show {currentListItems.length - 5} more</span>
                     </Button>}
             </Box>
             <Box className="listbuttons" sx={{display:"flex", justifyContent:"center", pb:"12px"}}>
@@ -158,7 +161,7 @@ const ListObject = ({list, setTriggerReload, handleDeleteList}) => {
                             <InputAdornment position="end">
                                 <IconButton
                                 aria-label="Submit New List Item"
-                                onClick={submitListItem}
+                                onClick={addNewListItem}
                                 edge="end"
                                 >
                                 <AddIcon />
@@ -172,9 +175,17 @@ const ListObject = ({list, setTriggerReload, handleDeleteList}) => {
                 </Popover>
                 <Button variant="outlined" onClick={handleOpen}>Edit List</Button>
             </Box>
+        <ListObjectExpanded
+        isOpen={isOpen}
+        handleClose={handleClose}
+        currentList={currentList}
+        setCurrentList={setCurrentList}
+        currentListItems={currentListItems}
+        isFavourite={isFavourite}
+        fetchAllLists={fetchAllLists}
+        allLists={allLists} />
         </Box>
-        <ListObjectExpanded isOpen={isOpen} handleClose={handleClose} currentList={currentList} setCurrentList={setCurrentList} listItems={listItems} setListItems={setListItems}/>
-        </>
+        
     )
 }
 
