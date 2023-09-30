@@ -1,74 +1,22 @@
-# JSON SERVER
-JSON server set up with nodemon
-Run using nodemon server.js
+# Individual Front-end Project
+This project was undertaken at the end of the front-end portion of my Boolean UK bootcamp. We were given a 5 day period to produce a functional front-end for an idea of our own choosing.
 
-# Getting Started with Create React App
+The theoretical end product that I chose to work towards was for a website that could be used for organisation, through a note & list system, with a variety of API sources integrated to extend the functionality beyond that of a basic list system. Hypothetically this would include features such as being able to create a list of films, each of which would automatically have the movie details fetched and attached, with a user then able to select a film from their list and look up showing times in their area.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Given the short time frame for this project I settled on the following primary aims:
 
-## Available Scripts
+ - Self teach how to implement component libraries within React, and use that to produce a single page web app with functional navigation and reactive elements.
+ - Implement new styling elements & methods that I have not previously used.
+ - Have at least one API source that prompted the user for relevant information, completed an HTTP request and correctly handled the response.
 
-In the project directory, you can run:
+# Tech Stack
 
-### `npm start`
+ - React
+ - React-Router
+ - Material-UI
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Personal Feedback
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Looking back at my initial aims I do believe I accomoplished what I was aiming for during this project. Using a component library for the first time was an interesting experience, and it allowed me to experiment with elements that I had not used before, including tabs and the masonry layout. By the end of the project I had a functioning single page app with a variety of interactive elements, including giving users a couple of different ways to interact with an API, with the app correctly handling their inputs and the API response.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Given that at this stage it is still very early in my coding journey, a little over 10 weeks after the course began and barely 6 weeks in to learning React, I am pleased with what I achieved in the 5 day timeframe. Experiencing some new tools was very interesting, I gained some good insight in to how to approach a larger project in order to get the most out of myself, and am happy with where I stand as we move on to the next part of the course. There is a lot more to learn but I believe that I am in a good position to continue my learning and build on the foundations I now have.
