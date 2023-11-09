@@ -35,7 +35,7 @@ const TopNav = () => {
                 }}
                 onClick={handleClick}
             >
-                Telegram Connect
+                PDA MK2
             </Button>
             <Typography 
                 className="pagetitle"

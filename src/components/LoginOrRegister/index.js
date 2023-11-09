@@ -13,7 +13,7 @@ const LoginOrRegister = ({
             <Box className="homelogo" display="flex" justifyContent="center">
                 <img src="/main-logo.svg" alt="Main Logo" className="mainlogo"/>
                 <Typography variant="h3" justifySelf="center">
-                    Telegram Connect
+                PDA MK2
                 </Typography>
             </Box>
             <Typography variant="h4" sx={{mb:"24px"}} >
